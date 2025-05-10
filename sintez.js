@@ -1,15 +1,15 @@
 export { encodeWAV, generatePCM };
 
-// sample[n]= A ⋅ sin(2 * π * f * (n / R)​)
-
-// Where:
-//   A: Amplitude (max value based on bit depth, e.g., 32767 for 16-bit)
-//   f: Frequency (Hz), e.g., middle C = 261.63 Hz
-//   R: Sample rate (samples per second), typically 44100 Hz
-//   n: Sample number (integer), from 0 to R × duration − 1
-
 function generatePCM(frequency, duration) {
-  throw new Error("Not implemented");
+  const amplitude = 32767;
+  const sampleRate = 44100 ;
+  const sampleNumber = sampleRate * (duration / 1000) - 1;
+  const sample = [];
+  for (let i = 0; i <= sampleNumber; i++) {
+    sample[i] = amplitude *
+      Math.sin(2 * Math.PI * frequency * (i / sampleRate));
+  }
+  return sample;
 }
 
 async function encodeWAV(
