@@ -2,7 +2,7 @@ export { encodeWAV, generatePCM };
 
 function generatePCM(frequency, duration) {
   const amplitude = 32767;
-  const sampleRate = 44100 ;
+  const sampleRate = 44100;
   const sampleNumber = sampleRate * (duration / 1000) - 1;
   const sample = [];
   for (let i = 0; i <= sampleNumber; i++) {
