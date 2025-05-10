@@ -1,5 +1,5 @@
-import { tokenize, typeify } from "./sintez.js";
-import { assertEquals } from "jsr:@std/assert";
+import { tokenize } from "./sintez.js";
+import { assertEquals, fail } from "jsr:@std/assert";
 
 const atom = (name) => Symbol.for(name);
 
@@ -41,7 +41,28 @@ Deno.test("Tokenizer", async (t) => {
     fn: () => {
       const result = tokenize("tone 261.63 1000");
 
-      assertEquals(result, [atom("tone"), 261.63, 1000]);
+      assertEquals(result, [
+        atom("tone"),
+        261.63,
+        1000,
+      ]);
+    },
+  });
+
+  await t.step({
+    name: "tokenize a list",
+    fn: () => {
+      const result = tokenize("(a 1)");
+      assertEquals(result, [[atom("a"), 1]]);
+    },
+  });
+
+  await t.step({
+    name: "tokenize a nested list",
+    fn: () => {
+      fail(
+        "This test is not implemented yet. Please implement it.",
+      );
     },
   });
 });
