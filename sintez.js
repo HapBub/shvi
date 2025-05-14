@@ -67,5 +67,29 @@ async function encodeWAV(
 const atom = (name) => Symbol.for(name);
 
 const tokenize = (input) => {
-  throw new Error("Not implemented");
+  const loop = (input, shelf, tokens) => {
+    if (input == []) {
+      tokens.push(shelf)}
+      return tokens;
+    }
+
+    const [f, ...r] = input;
+
+    switch (f) {
+      case " ":
+        // handle the space case
+        if (shelf)
+        return loop();
+        break;
+
+      default:
+        // handle the non-sace case
+        loop();
+        break;
+    }
+  };
+
+  loop(input, "", []);
+  console.log(tokens);
+  return tokens;
 };
