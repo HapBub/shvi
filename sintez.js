@@ -106,5 +106,14 @@ const tokenize = (input) => {
     return loop(r, shelf, tokens);
   };
 
-  return loop(input, "", []);
+  return loop([[]], graphemes);
+};
+
+const evaluate = (expression) => {
+  // If the expression is a number, return it
+  // If it is an array,
+  //   assume the first element is a function and the rest are arguments
+  //   evaluate the function with the arguments
+
+  throw new Error("Not implemented");
 };
