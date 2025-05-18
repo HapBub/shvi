@@ -65,31 +65,42 @@ async function encodeWAV(
 }
 
 const atom = (name) => Symbol.for(name);
+const typify = (name) => {
+  if (isNaN(Number(name))) {
+    return atom(name);
+  } else {
+    return Number(name);
+  }
+};
 
 const tokenize = (input) => {
   const loop = (input, shelf, tokens) => {
-    if (input == []) {
-      tokens.push(shelf)}
-      return tokens;
+    if (input.length === 0) {
+      if (shelf === "") {
+        return tokens;
+      } else {
+        tokens.push(typify(shelf));
+        return tokens;
+      }
     }
 
     const [f, ...r] = input;
 
     switch (f) {
       case " ":
-        // handle the space case
-        if (shelf)
-        return loop();
+        if (shelf) {
+          tokens.push(typify(shelf));
+          shelf = "";
+        }
         break;
 
       default:
-        // handle the non-sace case
-        loop();
+        shelf += f;
         break;
     }
+
+    return loop(r, shelf, tokens);
   };
 
-  loop(input, "", []);
-  console.log(tokens);
-  return tokens;
+  return loop(input, "", []);
 };
