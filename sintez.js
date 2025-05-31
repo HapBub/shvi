@@ -1,4 +1,4 @@
-export { encodeWAV, evaluate, generatePCM, tokenize, typeify };
+export { encodeWAV, evaluate, generatePCM, tokenize, typify };
 
 // sample[n]= A ⋅ sin(2 * π * f * (n / R)​)
 
@@ -73,29 +73,35 @@ const typify = (name) => {
   }
 };
 
-const typeify = (token) => {
-  throw new Error("Not implemented");
-};
-
 const tokenize = (input) => {
-  const loop = (input, shelf, tokens) => {
-    if (input.length === 0) {
-      if (shelf === "") {
-        return tokens;
-      } else {
-        tokens.push(typify(shelf));
-        return tokens;
-      }
+  const loop = (inputArr, shelf, stack) => {
+    if (inputArr.length === 0) {
+      if (shelf !== "") stack[stack.length - 1].push(typify(shelf));
+      return stack[0];
     }
 
-    const [f, ...r] = input;
+    const [f, ...r] = inputArr;
 
     switch (f) {
       case " ":
         if (shelf) {
-          tokens.push(typify(shelf));
+          stack[stack.length - 1].push(typify(shelf));
           shelf = "";
         }
+        break;
+
+      case "(":
+        stack.push([]);
+        break;
+
+      case ")":
+        if (shelf) {
+          stack[stack.length - 1].push(typify(shelf));
+          shelf = "";
+        }
+
+        const group = stack.pop();
+        stack[stack.length - 1].push(group);
         break;
 
       default:
@@ -103,17 +109,39 @@ const tokenize = (input) => {
         break;
     }
 
-    return loop(r, shelf, tokens);
+    return loop(r, shelf, stack);
   };
 
-  return loop([[]], graphemes);
+  return loop(Array.from(input), "", [[]]);
 };
 
 const evaluate = (expression) => {
-  // If the expression is a number, return it
-  // If it is an array,
-  //   assume the first element is a function and the rest are arguments
-  //   evaluate the function with the arguments
+  const match = {
+    "+": (a, b) => a + b,
+    "-": (a, b) => a - b,
+    "*": (a, b) => a * b,
+    "/": (a, b) => a / b,
+    [Symbol.for("tone")]: (frequency, durationMs) => {
+      const sampleRate = 44100;
+      const sampleCount = Math.floor(sampleRate * durationMs / 1000);
+      const samples = new Int16Array(sampleCount);
+      for (let i = 0; i < sampleCount; i++) {
+        const t = i / sampleRate;
+        const amplitude = 32760;
+        samples[i] = amplitude * Math.sin(2 * Math.PI * frequency * t);
+      }
+      return samples;
+    },
+  };
 
-  throw new Error("Not implemented");
+  if (typeof expression === "number") return expression;
+  if (!Array.isArray(expression)) {
+    throw new Error("Invalid expression: " + expression.toString());
+  }
+  const [operator, ...operands] = expression;
+  const key = typeof operator === "symbol" ? operator : operator.toString();
+  const fn = match[key];
+  if (!fn) throw new Error("Unknown operator: " + key.toString());
+  const evaList = operands.map(evaluate);
+  return fn(...evaList);
 };

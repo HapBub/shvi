@@ -6,7 +6,7 @@ Now we’ll try to tie those two together and make Shvi play the sound written i
 
 This will require a solid amount of coding, so before we get to it we need to warm up.
 
-In the `recursion.test.js` you will find a number of exercises that will help you get familiar with recursion. A `loop` function that replaces the four and calls itself, if needed, for another iteration. While recursing over lists, we'll notice a pattern: operate on the first element of the list, then call the function on the rest of it, aka head-tail recursion. Once we are done with the recursion exercises, we will move on to the tasks that will allow us to make a sound with code.
+In the `recursion.test.js` you will find a number of exercises that will help you get familiar with recursion. A `loop` function that replaces the, then call the function on the rest o four and calls itself, if needed, for another iteration. While recursing over lists, we'll notice a pattern: operate on the first element of the listf it, aka head-tail recursion. Once we are done with the recursion exercises, we will move on to the tasks that will allow us to make a sound with code.
 
 First let's look at what Lisp code looks like and how it is evaluated. Below is the formula we know for generating the sound sine wave:
 
@@ -47,14 +47,14 @@ To handle depth, we need to extend our tokenizer a bit. This time we will not on
 * When the stream ends, `stack[0]` is your program
 
 ```
-( + 1 2 3 ) ... []
+( + 1 2 3 ) ... [[]]
 ' ' ' ' ' '
-( |.|.|.|.|.... [] []
-  + |.|.|.|.... [+] []
-    1 |.|.|.... [+ 1] []
-      2 |.|.... [+ 1 2] []
-        3 |.... [+ 1 2 3] []
-          ) ... [[+ 1 2 3]]
+( |.|.|.|.|.... [[] []]
+  + |.|.|.|.... [[+] []]
+    1 |.|.|.... [[+ 1] []]
+      2 |.|.... [[+ 1 2] []]
+        3 |.... [[+ 1 2 3] []]
+          ) ... [[[+ 1 2 3]]]
 ```
 
 You'll find the tokenizer blueprint containing a `loop` function inside it this time. You'll notice that implementing the tokenizer using recursion, will mirror the nesting stack conveniently and we'll get a nice readable code.
